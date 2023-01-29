@@ -157,13 +157,47 @@ int GetMaxLengthDoubleItem2DArray(double[,] array)
 }
 
 
-// Задайте двумерный массив. Напишите программу, которая упорядочит по убыванию элементы каждой строки двумерного массива.
 int SetNumber(string greet)
 {
     Console.Write(greet);
     if (!int.TryParse(Console.ReadLine(), out int number)) number = SetNumber(greet);
     return number;
 }
+
+// Задайте двумерный массив. Напишите программу, которая упорядочит по убыванию элементы каждой строки двумерного массива.
+
+void SortRowDescend(int[,] array, int row)
+{
+    bool sort = false;
+    int Temp;
+    int length = array.GetLength(1);
+
+    if (!sort)
+    {
+        for (int i = 0; i < length - i; i++)
+        {
+            //sort = true;
+            if (array[row, i] < array[row, i + 1])
+            {
+                Temp = array[row, i];
+                array[row, i] = array[row, i + 1];
+                array[row, i + 1] = Temp;
+                sort = false;
+            }
+        }
+    }
+    else return;
+}
+
+
+void SortRowsArrayDescend(int[,] array)
+{
+    for (int i = 0; i < array.GetLength(0); i++)
+    {
+        SortRowDescend(array, i);
+    }
+}
+
 
 // Задайте прямоугольный двумерный массив. Напишите программу, которая будет находить строку с наименьшей суммой элементов.
 int[] FindInArray2D(int[,] array, int number)
@@ -179,22 +213,34 @@ int[] FindInArray2D(int[,] array, int number)
 }
 
 // Задайте две матрицы. Напишите программу, которая будет находить произведение двух матриц.
-double[] AverageColumns(int[,] array)
+
+int MultiplicationElement(int[,] array1, int[,] array2, int row, int column)
 {
-    int countRow = array.GetLength(0);
-    int countColumn = array.GetLength(1);
-    double[] average = new double[countColumn];
-    int sum;
-    for (int j = 0; j < countColumn; j++)
+    int count = array1.GetLength(1);
+    int mult = 0;
+    for (int i = 0; i < count; i++)
     {
-        sum = 0;
-        for (int i = 0; i < countRow; i++)
-        {
-            sum += array[i, j];
-        }
-        average[j] = Convert.ToDouble(sum) / countRow;
+        mult += array1[row, i] * array2[i, column];
     }
-    return average;
+    return mult;
+}
+
+int[,] MultiplicationMatrix(int[,] array1, int[,] array2)
+{
+    if (array1.GetLength(0) == array2.GetLength(1) && array1.GetLength(1) == array2.GetLength(0))
+    {
+        int count = array1.GetLength(0);
+        int[,] multArray = new int[count, count];
+        for (int i = 0; i < count; i++)
+        {
+            for (int j = 0; j < count; j++)
+            {
+                multArray[i, j] = MultiplicationElement(array1, array2, i, j);
+            }
+        }
+        return multArray;
+    }
+    else return new int[1, 1];
 }
 
 
@@ -203,7 +249,6 @@ double[] AverageColumns(int[,] array)
 
 
 // Напишите программу, которая заполнит спирально массив 4 на 4.
-
 
 void FillSpiralArray(int[,] array)
 {
@@ -249,7 +294,6 @@ void FillSpiralArray(int[,] array)
         }
     }
 }
-
 
 
 void FillUp(int[,] array, int row, int columnFirst, int columnLast, ref int number)
@@ -327,7 +371,11 @@ while (working.ToLower() == "Y".ToLower())
     {
         int countRow = SetNumber("Введите количество строк в массиве: ");
         int countColumn = SetNumber("Введите количество столбцов в массиве: ");
-        PrintDoubleArray2D(CreateRandomDouble2DArray(countRow, countColumn, -10, 10), 2);
+        int[,] array = CreateRandomInt2DArray(countRow, countColumn, 0, 10);
+        PrintIntArray2D(array, 2);
+        Console.WriteLine();
+        SortRowsArrayDescend(array);
+        PrintIntArray2D(array, 2);
     }
     else if (task == 2)
     {
@@ -341,21 +389,20 @@ while (working.ToLower() == "Y".ToLower())
     }
     else if (task == 3)
     {
-        int countRow = 4;
-        int countColumn = 6;
-        int digits = 3;
-        int interval = digits + 1;
-        int[,] array3 = CreateRandomInt2DArray(countRow, countColumn, 0, 10);
-        PrintIntArray2D(array3, interval);
-        double[] averageColumn = AverageColumns(array3);
-        Console.Write("   ");
-        for (int i = 0; i < countColumn; i++)
-        {
-            Console.Write($"Av({i}) ");
-        }
-        Console.WriteLine();
-        PrintDoubleArray1D(averageColumn, digits);
-        Console.WriteLine();
+        int countRow = SetNumber("Введите количество строк в 1-м массиве и столбцов во 2-м: ");
+        int countColumn = SetNumber("Введите количество столбцов в 1-м массиве и строк во 2-м: ");
+
+        int[,] array1 = CreateRandomInt2DArray(countRow, countColumn, 0, 5);
+        Console.WriteLine("Матрица 1:");
+        PrintIntArray2D(array1, 2);
+
+        int[,] array2 = CreateRandomInt2DArray(countColumn, countRow, 0, 5);
+        Console.WriteLine("Матрица 2:");
+        PrintIntArray2D(array2, 2);
+
+        int[,] multArray = MultiplicationMatrix(array1, array2);
+        Console.WriteLine("Результат перемножения матриц:");
+        PrintIntArray2D(multArray, 4);
     }
     else if (task == 4)
     {
@@ -369,9 +416,7 @@ while (working.ToLower() == "Y".ToLower())
     }
     else if (task == 5)
     {
-        int countRow = SetNumber("Введите количество строк в массиве: ");
-        int countColumn = SetNumber("Введите количество столбцов в массиве: ");
-        int[,] spiralArray = new int[countRow, countColumn];
+        int[,] spiralArray = new int[SetNumber("Введите количество строк в массиве: "), SetNumber("Введите количество столбцов в массиве: ")];
 
         FillSpiralArray2(spiralArray);
         PrintIntArray2D(spiralArray,5);
