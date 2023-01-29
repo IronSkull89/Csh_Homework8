@@ -172,21 +172,23 @@ void SortRowDescend(int[,] array, int row)
     int Temp;
     int length = array.GetLength(1);
 
-    if (!sort)
+    for (int i = length - 1; i > 0; i--)
     {
-        for (int i = 0; i < length - i; i++)
+        if (!sort)
         {
-            //sort = true;
-            if (array[row, i] < array[row, i + 1])
+            sort = true;
+            for (int j = 0; j < i; j++)
             {
-                Temp = array[row, i];
-                array[row, i] = array[row, i + 1];
-                array[row, i + 1] = Temp;
-                sort = false;
+                if (array[row, j] < array[row, j + 1])
+                {
+                    Temp = array[row, j];
+                    array[row, j] = array[row, j + 1];
+                    array[row, j + 1] = Temp;
+                    sort = false;
+                }
             }
         }
     }
-    else return;
 }
 
 
@@ -272,7 +274,8 @@ void FillSpiralArray(int[,] array)
     int countTurns = 0;
     int indexVector = 0;
     int[] vector = vectorArray[indexVector]; //указываем направление
-    while (true) { 
+    while (true)
+    {
         array[row, column] = number; //записываем число
         fillArrayValue[row, column] = true; //помечаем что здесь уже были
         if ((row + vector[0] > -1 && row + vector[0] < countRow)
@@ -288,7 +291,7 @@ void FillSpiralArray(int[,] array)
         {
             if (countTurns == countVectors) return; //если проверили со всех сторон
             if (indexVector == vectorArray.Length - 1) indexVector = 0;  // если проверили снизу, указываем направление
-            else indexVector++; 
+            else indexVector++;
             vector = vectorArray[indexVector]; //указываем направление
             countTurns++;
         }
@@ -336,7 +339,7 @@ void FillSquare(int[,] array, int layer, ref int number)
 {
     int countRow = array.GetLength(0);
     int countColumn = array.GetLength(1);
-   
+
     FillUp(array, layer - 1, layer - 1, countColumn - layer, ref number);
     FillRight(array, countColumn - layer, layer, countRow - layer, ref number);
     if (layer - 1 != countRow - layer) FillDown(array, countRow - layer, countColumn - layer - 1, layer - 1, ref number);
@@ -375,6 +378,7 @@ while (working.ToLower() == "Y".ToLower())
         PrintIntArray2D(array, 2);
         Console.WriteLine();
         SortRowsArrayDescend(array);
+        Console.WriteLine("Массив с отсортированными по убаванию строками:");
         PrintIntArray2D(array, 2);
     }
     else if (task == 2)
@@ -419,7 +423,7 @@ while (working.ToLower() == "Y".ToLower())
         int[,] spiralArray = new int[SetNumber("Введите количество строк в массиве: "), SetNumber("Введите количество столбцов в массиве: ")];
 
         FillSpiralArray2(spiralArray);
-        PrintIntArray2D(spiralArray,5);
+        PrintIntArray2D(spiralArray, 5);
     }
     Console.WriteLine("Введите 'Y' для продолжения или любой другой символ для закрытия...");
     working = Console.ReadLine();
