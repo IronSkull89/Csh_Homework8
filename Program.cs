@@ -10,7 +10,7 @@ tasks[0] = "1. Задайте двумерный массив. Программ�
 tasks[1] = "2. Задайте прямоугольный двумерный массив. Программа, которая будет находить строку с наименьшей суммой элементов.";
 tasks[2] = "3. Задайте две матрицы. Программа, которая будет находить произведение двух матриц.";
 tasks[3] = "4. Сформируйте трёхмерный массив из неповторяющихся двузначных чисел. Программа, которая будет построчно выводить массив, добавляя индексы каждого элемента.";
-tasks[4] = "3. Программа, которая заполнит спирально массив 4 на 4.";
+tasks[4] = "5. Программа, которая заполнит спирально массив 4 на 4.";
 
 
 int SelectionTask(string[] tasks, int countTasks)
@@ -46,6 +46,43 @@ int[,] CreateRandomInt2DArray(int row, int column, int minValue, int maxValue)
         for (int j = 0; j < array.GetLength(1); j++)
         {
             array[i, j] = random.Next(minValue, maxValue + 1);
+        }
+    }
+    return array;
+}
+
+int[,,] CreateRandomNoRepeatInt3DArray(int tube, int row, int column, int minValue, int maxValue)
+{
+    int[,,] array = new int[tube, row, column];
+
+    if (minValue > maxValue)
+    {
+        int temp = minValue;
+        minValue = maxValue;
+        maxValue = temp;
+    }
+
+    int countNumber = 0;
+    int indexRandomNumber;
+    Random random = new Random();
+    int randomCount = maxValue - minValue + 1;
+    int[] randomNumbers = new int[randomCount];
+    for (int i = 0; i < randomCount; i++)
+    {
+        randomNumbers[i] = i + minValue;
+    }
+
+    for (int i = 0; i < array.GetLength(0); i++)
+    {
+        for (int j = 0; j < array.GetLength(1); j++)
+        {
+            for (int k = 0; k < array.GetLength(2); k++)
+            {
+                indexRandomNumber = random.Next(0, randomCount - countNumber);
+                array[i, j, k] = randomNumbers[indexRandomNumber];
+                randomNumbers[indexRandomNumber] = randomNumbers[randomCount - countNumber - 1];
+                countNumber++;
+            }
         }
     }
     return array;
@@ -97,6 +134,24 @@ void PrintIntArray2D(int[,] array, int interval)
     }
 }
 
+void PrintIntArray3DWithIndex(int[,,] array, int interval)
+{
+    int widthColumn = 5;
+    //int widthColumn = GetMaxLengthIntItem2DArray(array) + interval;
+
+    for (int i = 0; i < array.GetLength(0); i++)
+    {
+        for (int j = 0; j < array.GetLength(1); j++)
+        {
+            for (int k = 0; k < array.GetLength(2); k++)
+            {
+                Console.Write((String.Format("{0," + widthColumn + "}", array[i, j, k])) + $"({i},{j},{k})");
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine();
+    }      
+}
 void PrintDoubleArray2D(double[,] array, int digits)
 {
     int widthColumn = GetMaxLengthDoubleItem2DArray(array) + digits + 2;
@@ -402,6 +457,7 @@ while (working.ToLower() == "Y".ToLower())
         int countRow = SetNumber("Введите количество строк в массиве: ");
         int countColumn = SetNumber("Введите количество столбцов в массиве: ");
         int[,] array = CreateRandomInt2DArray(countRow, countColumn, 0, 10);
+        Console.WriteLine();
         PrintIntArray2D(array, 2);
         Console.WriteLine();
         int indexMinSumRow = RowMinSum(array);
@@ -426,18 +482,17 @@ while (working.ToLower() == "Y".ToLower())
     }
     else if (task == 4)
     {
-        //int[,] array2 = CreateRandomInt2DArray(6, 6, -10, 10);
-        //PrintIntArray2D(array2, 2);
-        //int findNumber = SetNumber("Введите искомое число: ");
-        //int[] findIndex = FindInArray2D(array2, findNumber);
-
-        //if (findIndex[0] == -1) Console.WriteLine($"Число {findNumber} не найдено");
-        //else Console.WriteLine($"Число {findNumber} находится на позиции ({String.Join(",", findIndex)})");
+        int countRow = SetNumber("Введите количество строк в массиве: ");
+        int countColumn = SetNumber("Введите количество столбцов в массиве: ");
+        int countTube = SetNumber("Введите количество листов в массиве: ");
+        int[,,] array = CreateRandomNoRepeatInt3DArray(countTube, countRow, countColumn, 10, 99);
+        Console.WriteLine();
+        PrintIntArray3DWithIndex(array, 2);
     }
     else if (task == 5)
     {
         int[,] spiralArray = new int[SetNumber("Введите количество строк в массиве: "), SetNumber("Введите количество столбцов в массиве: ")];
-
+        //FillSpiralArray(spiralArray);
         FillSpiralArray2(spiralArray);
         PrintIntArray2D(spiralArray, 5);
     }
