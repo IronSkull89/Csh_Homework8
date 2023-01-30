@@ -202,16 +202,31 @@ void SortRowsArrayDescend(int[,] array)
 
 
 // Задайте прямоугольный двумерный массив. Напишите программу, которая будет находить строку с наименьшей суммой элементов.
-int[] FindInArray2D(int[,] array, int number)
+
+int RowMinSum(int[,] array)
 {
+    int indexMinSum = -1;
+    int minSum = int.MaxValue;
+    int sum;
     for (int i = 0; i < array.GetLength(0); i++)
     {
-        for (int j = 0; j < array.GetLength(1); j++)
-        {
-            if (number == array[i, j]) return new int[] { i, j };
+       sum = SumRow(array, i);
+        if (sum < minSum) 
+        { 
+            minSum = sum;
+            indexMinSum = i;
         }
     }
-    return new int[] { -1, -1 };
+    return indexMinSum;
+}
+int SumRow(int[,] array, int row)
+{
+    int sum = 0;
+    for (int i = 0; i < array.GetLength(1); i++)
+    {
+        sum += array[row, i];
+    }
+    return sum;
 }
 
 // Задайте две матрицы. Напишите программу, которая будет находить произведение двух матриц.
@@ -380,16 +395,17 @@ while (working.ToLower() == "Y".ToLower())
         SortRowsArrayDescend(array);
         Console.WriteLine("Массив с отсортированными по убаванию строками:");
         PrintIntArray2D(array, 2);
+        Console.WriteLine();
     }
     else if (task == 2)
     {
-        int[,] array2 = CreateRandomInt2DArray(6, 6, -10, 10);
-        PrintIntArray2D(array2, 2);
-        int findNumber = SetNumber("Введите искомое число: ");
-        int[] findIndex = FindInArray2D(array2, findNumber);
-
-        if (findIndex[0] == -1) Console.WriteLine($"Число {findNumber} не найдено");
-        else Console.WriteLine($"Число {findNumber} находится на позиции ({String.Join(",", findIndex)})");
+        int countRow = SetNumber("Введите количество строк в массиве: ");
+        int countColumn = SetNumber("Введите количество столбцов в массиве: ");
+        int[,] array = CreateRandomInt2DArray(countRow, countColumn, 0, 10);
+        PrintIntArray2D(array, 2);
+        Console.WriteLine();
+        int indexMinSumRow = RowMinSum(array);
+        Console.WriteLine($"Наименьшая сумма {SumRow(array, indexMinSumRow)} в строке с индексом {indexMinSumRow}\r\n");
     }
     else if (task == 3)
     {
@@ -410,13 +426,13 @@ while (working.ToLower() == "Y".ToLower())
     }
     else if (task == 4)
     {
-        int[,] array2 = CreateRandomInt2DArray(6, 6, -10, 10);
-        PrintIntArray2D(array2, 2);
-        int findNumber = SetNumber("Введите искомое число: ");
-        int[] findIndex = FindInArray2D(array2, findNumber);
+        //int[,] array2 = CreateRandomInt2DArray(6, 6, -10, 10);
+        //PrintIntArray2D(array2, 2);
+        //int findNumber = SetNumber("Введите искомое число: ");
+        //int[] findIndex = FindInArray2D(array2, findNumber);
 
-        if (findIndex[0] == -1) Console.WriteLine($"Число {findNumber} не найдено");
-        else Console.WriteLine($"Число {findNumber} находится на позиции ({String.Join(",", findIndex)})");
+        //if (findIndex[0] == -1) Console.WriteLine($"Число {findNumber} не найдено");
+        //else Console.WriteLine($"Число {findNumber} находится на позиции ({String.Join(",", findIndex)})");
     }
     else if (task == 5)
     {
