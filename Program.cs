@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using System.Diagnostics;
+using System.Numerics;
 using System.Threading.Tasks;
 
 int countTasks = 5;
@@ -29,16 +30,28 @@ int SelectionTask(string[] tasks, int countTasks)
     return task;
 }
 
-int[,] CreateRandomInt2DArray(int row, int column, int minValue, int maxValue)
+int SetNumber(string greet)
 {
-    int[,] array = new int[row, column];
+    Console.Write(greet);
+    if (!int.TryParse(Console.ReadLine(), out int number)) number = SetNumber(greet);
+    return number;
+}
 
+void Ordering(int minValue, int maxValue)
+{
     if (minValue > maxValue)
     {
         int temp = minValue;
         minValue = maxValue;
         maxValue = temp;
     }
+}
+
+int[,] CreateRandomInt2DArray(int row, int column, int minValue, int maxValue)
+{
+    int[,] array = new int[row, column];
+
+    Ordering(minValue, maxValue);
 
     Random random = new Random();
     for (int i = 0; i < array.GetLength(0); i++)
@@ -51,173 +64,35 @@ int[,] CreateRandomInt2DArray(int row, int column, int minValue, int maxValue)
     return array;
 }
 
-int[,,] CreateRandomNoRepeatInt3DArray(int tube, int row, int column, int minValue, int maxValue)
+void PrintIntArray2D(int[,] array, int widthColumn)
 {
-    int[,,] array = new int[tube, row, column];
-
-    if (minValue > maxValue)
-    {
-        int temp = minValue;
-        minValue = maxValue;
-        maxValue = temp;
-    }
-
-    int countNumber = 0;
-    int indexRandomNumber;
-    Random random = new Random();
-    int randomCount = maxValue - minValue + 1;
-    int[] randomNumbers = new int[randomCount];
-    for (int i = 0; i < randomCount; i++)
-    {
-        randomNumbers[i] = i + minValue;
-    }
-
     for (int i = 0; i < array.GetLength(0); i++)
     {
         for (int j = 0; j < array.GetLength(1); j++)
         {
-            for (int k = 0; k < array.GetLength(2); k++)
-            {
-                indexRandomNumber = random.Next(0, randomCount - countNumber);
-                array[i, j, k] = randomNumbers[indexRandomNumber];
-                randomNumbers[indexRandomNumber] = randomNumbers[randomCount - countNumber - 1];
-                countNumber++;
-            }
-        }
-    }
-    return array;
-}
-
-double[,] CreateRandomDouble2DArray(int row, int column, double minValue, double maxValue)
-{
-    double[,] array = new double[row, column];
-
-    if (minValue > maxValue)
-    {
-        double temp = minValue;
-        minValue = maxValue;
-        maxValue = temp;
-    }
-
-    Random random = new Random();
-    for (int i = 0; i < array.GetLength(0); i++)
-    {
-        for (int j = 0; j < array.GetLength(1); j++)
-        {
-            array[i, j] = random.NextDouble() * (maxValue - minValue) + minValue;
-        }
-    }
-    return array;
-}
-
-void PrintDoubleArray1D(double[] array, int digits)
-{
-    int widthColumn = GetMaxLengthDoubleItem1DArray(array) + digits + 2;
-
-    foreach (var item in array)
-    {
-        Console.Write(String.Format("{0," + widthColumn + "}", Math.Round(item, digits)));
-    }
-}
-
-void PrintIntArray2D(int[,] array, int interval)
-{
-    int widthColumn = GetMaxLengthIntItem2DArray(array) + interval;
-
-    for (int i = 0; i < array.GetLength(0); i++)
-    {
-        for (int j = 0; j < array.GetLength(1); j++)
-        {
-            Console.Write(String.Format("{0," + widthColumn + "}", array[i, j]));
+            Console.Write(String.Format("{0," + -widthColumn + "}", array[i, j]));
         }
         Console.WriteLine();
+        
     }
 }
 
-void PrintIntArray3DWithIndex(int[,,] array, int interval)
+void PrintIntArray3DWithIndex(int[,,] array, int widthColumn)
 {
-    int widthColumn = 5;
-    //int widthColumn = GetMaxLengthIntItem2DArray(array) + interval;
-
     for (int i = 0; i < array.GetLength(0); i++)
     {
         for (int j = 0; j < array.GetLength(1); j++)
         {
             for (int k = 0; k < array.GetLength(2); k++)
             {
-                Console.Write((String.Format("{0," + widthColumn + "}", array[i, j, k])) + $"({i},{j},{k})");
+                Console.Write(String.Format("{0," + -widthColumn + "}", array[i, j, k] + $"({i},{j},{k})"));
             }
             Console.WriteLine();
         }
         Console.WriteLine();
     }      
 }
-void PrintDoubleArray2D(double[,] array, int digits)
-{
-    int widthColumn = GetMaxLengthDoubleItem2DArray(array) + digits + 2;
 
-    for (int i = 0; i < array.GetLength(0); i++)
-    {
-        for (int j = 0; j < array.GetLength(1); j++)
-        {
-            Console.Write(String.Format("{0," + widthColumn + "}", Math.Round(array[i, j], digits)));
-        }
-        Console.WriteLine();
-    }
-}
-
-int GetMaxLengthDoubleItem1DArray(double[] array)
-{
-    int maxLength = 0;
-    int itemLength = 0;
-
-    for (int i = 0; i < array.Length; i++)
-    {
-        itemLength = Convert.ToInt32(array[i]).ToString().Length;
-        if (maxLength < itemLength) maxLength = itemLength;
-    }
-    return maxLength;
-}
-
-int GetMaxLengthIntItem2DArray(int[,] array)
-{
-    int maxLength = 0;
-    int itemLength = 0;
-
-    for (int i = 0; i < array.GetLength(0); i++)
-    {
-        for (int j = 0; j < array.GetLength(1); j++)
-        {
-            itemLength = array[i, j].ToString().Length;
-            if (maxLength < itemLength) maxLength = itemLength;
-        }
-    }
-    return maxLength;
-}
-
-int GetMaxLengthDoubleItem2DArray(double[,] array)
-{
-    int maxLength = 0;
-    int itemLength = 0;
-
-    for (int i = 0; i < array.GetLength(0); i++)
-    {
-        for (int j = 0; j < array.GetLength(1); j++)
-        {
-            itemLength = Convert.ToInt32(array[i, j]).ToString().Length;
-            if (maxLength < itemLength) maxLength = itemLength;
-        }
-    }
-    return maxLength;
-}
-
-
-int SetNumber(string greet)
-{
-    Console.Write(greet);
-    if (!int.TryParse(Console.ReadLine(), out int number)) number = SetNumber(greet);
-    return number;
-}
 
 // Задайте двумерный массив. Напишите программу, которая упорядочит по убыванию элементы каждой строки двумерного массива.
 
@@ -318,7 +193,67 @@ int[,] MultiplicationMatrix(int[,] array1, int[,] array2)
 
 // Сформируйте трёхмерный массив из неповторяющихся двузначных чисел. Напишите программу, которая будет построчно выводить массив, добавляя индексы каждого элемента.
 
+void FourthTask(int minValue, int maxValue) {
+    int countTube = SetNumber("Введите количество строк в массиве: ");
+    int countRow = SetNumber("Введите количество столбцов в массиве: ");
+    int countColumn = SetNumber("Введите количество листов в массиве: ");
 
+    if (VerificationCreateRandomNoRepeatInt3DArray(countTube, countRow, countColumn, minValue, maxValue))
+    {
+        int[,,] array = CreateRandomNoRepeatInt3DArray(countTube, countRow, countColumn, minValue, maxValue);
+        Console.WriteLine();
+        PrintIntArray3DWithIndex(array, 10);
+    }
+    else FourthTask(minValue, maxValue);
+}
+
+bool VerificationCreateRandomNoRepeatInt3DArray(int tube, int row, int column, int minValue, int maxValue) 
+{
+    Ordering(minValue, maxValue);
+
+    int randomCount = maxValue - minValue + 1;
+
+    if (tube * row * column > randomCount)
+    {
+        Console.WriteLine("Размерность массива больше возможной, для заполнения её неповторяющимися значениями из выбранного диапазона");
+        return false;
+    }
+    else return true;
+}
+
+int[,,] CreateRandomNoRepeatInt3DArray(int tube, int row, int column, int minValue, int maxValue)
+{
+    int randomCount = maxValue - minValue + 1;
+
+    int[,,] array = new int[tube, row, column];
+
+    int[] randomNumbers = new int[randomCount];
+    int indexRandomNumber;
+
+    for (int i = 0; i < randomCount; i++)
+    {
+        randomNumbers[i] = i + minValue;
+    }
+
+    Random random = new Random();
+
+    int countNumber = 0;
+
+    for (int i = 0; i < array.GetLength(0); i++)
+    {
+        for (int j = 0; j < array.GetLength(1); j++)
+        {
+            for (int k = 0; k < array.GetLength(2); k++)
+            {
+                indexRandomNumber = random.Next(0, randomCount - countNumber);
+                array[i, j, k] = randomNumbers[indexRandomNumber];
+                randomNumbers[indexRandomNumber] = randomNumbers[randomCount - countNumber - 1];
+                countNumber++;
+            }
+        }
+    }
+    return array;
+}
 
 // Напишите программу, которая заполнит спирально массив 4 на 4.
 
@@ -442,52 +377,44 @@ while (working.ToLower() == "Y".ToLower())
     task = SelectionTask(tasks, countTasks);
     if (task == 1)
     {
-        int countRow = SetNumber("Введите количество строк в массиве: ");
-        int countColumn = SetNumber("Введите количество столбцов в массиве: ");
-        int[,] array = CreateRandomInt2DArray(countRow, countColumn, 0, 10);
-        PrintIntArray2D(array, 2);
+        int[,] array = CreateRandomInt2DArray(SetNumber("Введите количество строк в массиве: "), SetNumber("Введите количество столбцов в массиве: "), 0, 10);
+        PrintIntArray2D(array, 4);
         Console.WriteLine();
         SortRowsArrayDescend(array);
         Console.WriteLine("Массив с отсортированными по убаванию строками:");
-        PrintIntArray2D(array, 2);
-        Console.WriteLine();
+        PrintIntArray2D(array, 4);
     }
     else if (task == 2)
     {
-        int countRow = SetNumber("Введите количество строк в массиве: ");
-        int countColumn = SetNumber("Введите количество столбцов в массиве: ");
-        int[,] array = CreateRandomInt2DArray(countRow, countColumn, 0, 10);
+        int[,] array = CreateRandomInt2DArray(SetNumber("Введите количество строк в массиве: "), SetNumber("Введите количество столбцов в массиве: "), 0, 10);
         Console.WriteLine();
-        PrintIntArray2D(array, 2);
+        PrintIntArray2D(array, 4);
         Console.WriteLine();
         int indexMinSumRow = RowMinSum(array);
-        Console.WriteLine($"Наименьшая сумма {SumRow(array, indexMinSumRow)} в строке с индексом {indexMinSumRow}\r\n");
+        Console.WriteLine($"Наименьшая сумма {SumRow(array, indexMinSumRow)} в строке с индексом {indexMinSumRow}");
     }
     else if (task == 3)
     {
-        int countRow = SetNumber("Введите количество строк в 1-м массиве и столбцов во 2-м: ");
-        int countColumn = SetNumber("Введите количество столбцов в 1-м массиве и строк во 2-м: ");
+        int countRow = SetNumber("Введите количество строк в 1-м массиве (столбцов во 2-м соответственно): ");
+        int countColumn = SetNumber("Введите количество столбцов в 1-м массиве (строк во 2-м ссоответственно): ");
 
         int[,] array1 = CreateRandomInt2DArray(countRow, countColumn, 0, 5);
         Console.WriteLine("Матрица 1:");
-        PrintIntArray2D(array1, 2);
+        PrintIntArray2D(array1, 4);
 
         int[,] array2 = CreateRandomInt2DArray(countColumn, countRow, 0, 5);
         Console.WriteLine("Матрица 2:");
-        PrintIntArray2D(array2, 2);
+        PrintIntArray2D(array2, 4);
 
         int[,] multArray = MultiplicationMatrix(array1, array2);
         Console.WriteLine("Результат перемножения матриц:");
-        PrintIntArray2D(multArray, 4);
+        PrintIntArray2D(multArray, 6);
     }
     else if (task == 4)
     {
-        int countRow = SetNumber("Введите количество строк в массиве: ");
-        int countColumn = SetNumber("Введите количество столбцов в массиве: ");
-        int countTube = SetNumber("Введите количество листов в массиве: ");
-        int[,,] array = CreateRandomNoRepeatInt3DArray(countTube, countRow, countColumn, 10, 99);
-        Console.WriteLine();
-        PrintIntArray3DWithIndex(array, 2);
+        int minValue = 10;
+        int maxValue = 99;
+        FourthTask(minValue, maxValue);
     }
     else if (task == 5)
     {
@@ -496,7 +423,7 @@ while (working.ToLower() == "Y".ToLower())
         FillSpiralArray2(spiralArray);
         PrintIntArray2D(spiralArray, 5);
     }
-    Console.WriteLine("Введите 'Y' для продолжения или любой другой символ для закрытия...");
+    Console.WriteLine("\r\nВведите 'Y' для продолжения или любой другой символ для закрытия...");
     working = Console.ReadLine();
     if (string.IsNullOrWhiteSpace(working))
     {
